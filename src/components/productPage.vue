@@ -17,19 +17,24 @@
          <div v-if="showModal">
             <Modal @close="toggleModal">
                <template v-slot:modalCont>
-                  <div v-for="product in product" v-bind:key="product.title" class="stand modal-stand" :class="{hide: product.remaining==0}">
+                  <div class="no-reward" ref="noRewardField">
+                     <button @click="chooseNoReward(); addBackers();" class="choose-btn no-reward-btn"></button>
+                     <h3>Pledge with no reward</h3>
+                     <p>Choose to support us without a reward if you simply believe in our project. As a backer, you will be signed up to receive product updates via email.</p>
+                  </div>
+                  <div v-for="product in products" v-bind:key="product.title" class="stand modal-stand" :class="{hide: product.remaining==0}">
                      <div class="grid-container">
                         <button @click="chooseReward" class="choose-btn item-button choose-reward-btn"></button>
                         <h3 class="product-title product-title-modal item-title">{{ product.title }}</h3>
                         <p id="product-pledge" class="product-pledge product-pledge-modal item-pledge">{{ product.pledge }}</p>
-                        <p class="product-remaining item-left"><span>{{ product.remaing + ' '}}</span> left</p>
+                        <p class="product-remaining item-left"><span>{{ product.remaining + ' '}}</span> left</p>
                         <p class="product-text item-text">{{ product.text }}</p>
                      </div>
                      <div class="continue-container">
                         <p>Enter your pledge</p>
                         <div class="continue-bottom">
                            <div class="currency"><input id="yourInput" class="inputValue" type="text" :placeholder="product.pledgeValue" value=""></div>
-                           <button @click="toggleSuccessModal" class="continue">Continue</button>
+                           <button @click="backers +=1; remainingProducts(product);" class="continue">Continue</button>
                         </div>
                      </div>
                   </div>
@@ -38,7 +43,7 @@
          </div>
       </div>
       <div class="progress-bar-section">
-         <div class="amount"><span>{{ amountValue }}</span> of $100,000 backed</div><hr>
+         <div class="amount"><span class="amount-num"> $ {{ amountValue }}</span> of $100,000 backed</div><hr>
          <div class="backers-num"><span>{{ backers }}</span>total backers</div><hr>
          <div class="remaining-days"><span>{{ days }}</span> days left</div>
          <div class="range-slider">
@@ -132,6 +137,15 @@ export default{
          }else{
             this.$refs.modalOverlay.classList.remove('showOverlay');
          }
+      },
+      addBackers(){
+         this.backers++;
+      }, 
+      remainingProducts(product){
+         product.remaining -=1;
+      },
+      chooseNoReward(){
+         this.$refs.noRewardField.classList.toggle('choosenReward');
       }
    },
    mounted(){
@@ -323,9 +337,6 @@ export default{
    }
    .item-pledge{
       grid-area:pledge;
-   }
-   .item-pledge{
-      grid-area:title;
    }
    .item-title{
       grid-area:title;
